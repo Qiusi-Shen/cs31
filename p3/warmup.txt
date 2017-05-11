@@ -1,0 +1,150 @@
+Spring 2017 CS 31
+Project 3 Warmup
+
+Creating the project
+
+The solution to Project 3 will consist of three files: one that you write and two that we provide to you. This warmup shows you how to set up a project consisting of more than one file. (You will not turn in the file of the code you write because of this warmup, although you will probably incorporate some things into your Project 3 solution.)
+
+The code that we provide you with is a small library of four functions for doing simple character-based graphics in a console window. Consider the window to be a grid of 20 rows and 30 columns, each cell of which displays some character (note that a space is a valid character). The library lets you place characters at various locations in the grid and draw the grid on the screen. The library functions are:
+
+clearGrid, which must be called before you start calling other functions in the library. This function sets every character of the grid to a space character (' ').
+
+setChar, which sets one cell of the grid to a specified character. The row and column coordinates of the upper left corner of the grid are (1,1); the lower right corner is (20,30). The call setChar(20,1,'*') places an asterisk at the lower left corner of the grid, while setChar(8,30,'x') would write an x about a third of the way down the right edge of the grid.
+getChar, which returns the character at a particular (row,col) position in the grid. For example, if the character at position (15,10) is currently an exclamation mark, then char x = getChar(15,10) would initialize x to '!'.
+
+draw, which displays the grid on the screen.
+
+The library also defines two integer constants, NROWS, which is equal to 20, and NCOLS, which is equal to 30.
+
+Setting up the project in Visual C++
+
+Follow these steps to set up a Visual C++ project to compile and run a simple three-file program that tests the library. A number of these steps may have alternate ways to achieve the same end.
+
+Follow steps 1 through 4 in the Visual C++ 2015 writeup to create an empty Visual C++ project.
+
+From the Project menu, select Add New Item. In the Add New Item dialog, select C++ file (.cpp) in the middle panel. Enter a source file name, such as picture, in the Name text box below. Click Add.
+
+Edit the picture.cpp file in the window that appears. Type in a program like
+
+	#include "graphlib.h"
+	#include <iostream>
+	using namespace std;
+
+	int main()
+	{
+	    
+	    clearGrid();
+	    const int middle = NCOLS / 2;
+	    setChar(10, middle, 'E');
+	    setChar(12, middle, 'L');
+	    setChar(13, middle, 'O');
+	    setChar(11, middle, 'L');
+	    setChar(9, middle, 'H');
+	    if (getChar(10, middle) == 'E')
+	        setChar(14, middle, '!');
+	    draw();
+	}
+From the Project menu, select Add New Item. This time, in the Add New Item dialog, select Header file (.h) in the middle panel and enter the header file name graphlib in the Name text box below. Copy and paste this text into the graphlib.h file that appears:
+
+	// Graphics library interface
+
+	#ifndef GRAPHLIB_INCLUDED
+	#define GRAPHLIB_INCLUDED
+
+	const int NROWS = 20;
+	const int NCOLS = 30;
+
+	void clearGrid();
+	void setChar(int r, int c, char ch);
+	char getChar(int r, int c);
+	void draw();
+
+	#endif // GRAPHLIB_INCLUDED
+From the Project menu, select Add New Item. This last time, select C++ file (.cpp) in the middle panel, and enter the source file name graphlib in the Name text box below. Copy and paste our implementation of the graphics library into the graphlib.cpp file that appears.
+
+From the Debug menu, select Start Without Debugging. This will save any changed files, compile the source files, and run the resulting executable if there were no build errors. (If you select Start Debugging, your console window screen will disappear as soon as your program finishes executing, which you don't want.)
+
+Setting up the project in Xcode
+
+Follow these steps to set up an Xcode project to compile and run a simple three-file program that tests the library. A number of these steps may have alternate ways to achieve the same end.
+
+Follow steps 1 through 5 in the Xcode on a Mac writeup to create a project. Use picture as the project name instead of hello.
+
+In the left frame, click once on the name main.cpp, and rename the file to picture.cpp. Once you've clicked outside the text box to effect the name change, double-click the main.cpp file, which already has some sample code in it. Replace that code with the code in step 3 of the Visual C++ section above.
+
+Select File / New File. Select C and C++ under OSX in the left panel and C++ Class in the right. Click Next. Use graphlib.cpp for Save As, and click Finish. Replace the code in graphlib.cpp with our implementation of the graphics library. Copy and paste into graphlib.h the code from step 4 of the Visual C++ section above.
+
+Follow steps 7 through 10 in the Xcode on a Mac writeup to build and run your program.
+
+Running the project using g++ with Linux
+
+To take a three-file project you've developed with Visual C++ and run it with g++ under Linux, follow these steps.
+
+Copy the three files (graphlib.h, graphlib.cpp, and the file with your main routine, say picture.cpp) to the Windows desktop on a SEASnet machine.
+
+Log in to cs31.seas.ucla.edu.
+
+Create a new directory for this project; let's call it proj3:
+
+	mkdir proj3
+Copy the files from the Desktop to this directory:
+
+	cp Desktop/graphlib.* Desktop/picture.cpp proj3
+Make proj3 the current direcory (i.e., the default directory for now in which files will be found or created):
+
+	cd proj3
+Verify that the expected three files are present by listing the contents of the current directory:
+
+	ls
+Build an executable file from the source files. If we would like the executable file to be named picture, we'd say
+
+	g31 -o picture *.cpp
+The *.cpp saves us typing individual file names by matching all the files whose names end in .cpp. (Notice that we do not list the .h file.).
+
+To execute the program picture that you built, you'd just say
+
+	picture
+(If that doesn't work, try ./picture)
+
+Using the graphics library
+
+For the following experiments (and for Project 3 itself), you will make no modifications to graphlib.h or graphlib.cpp. Every change and addition you make will be in picture.cpp.
+
+Experiment with the graphics library by making some modifications to the main routine in picture.cpp. You'll discover that if you try to set or get a cell outside of the grid, the library will terminate your program with an error message. For example,
+
+	setChar(21, 31, '@');
+produces the message setChar: invalid position (21,31) because row 21, column 31 would be out of the grid, which has only 20 rows and 30 columns.
+
+Try writing a function that draws a horizontal line. Add this function to picture.cpp. Its prototype is
+
+	void plotHorizontalLine(int r, int c, int distance, char ch);
+This function sets characters in the grid to form a horizontial line segment whose left endpoint is (r,c). If the distance parameter is zero, the "line" consists only of the point (r,c). If distance is positive, the line extends rightward from (r,c); distance is the distance from (r,c) of the other endpoint of the line. The last parameter is the character used to draw the line. For example, the call plotHorizontalLine(1,1,5,'*') plots a horizontal line of six stars starting at the upper left corner: (1,1), (1,2), (1,3), (1,4), (1,5), and (1,6); the distance from (1,1) to (1,6) is 5. (Calling draw() after this call would show you the resulting grid.) If distance is negative, the function should simply return without plotting anything.
+
+Set only those characters that lie within the grid. If any characters to be plotted would fall outside the grid, do not attempt to set those characters (since the call to setChar would terminate your program), and do not write any error message. For example, the calls plotHorizontalLine(1,28,4,'@') and plotHorizontalLine(1,28,2,'@') would produce exactly the same result: three @ characters at (1,28), (1,29), and (1,30), since (1,31) and (1,32) are outside the grid. Similarly, the call plotHorizontalLine(6,-5,7,'X') produces two X characters at (6,1) and (6,2), since the six positions (6,-5), (6,-4), (6,-3), (6,-2), (6,-1) and (6,0) are outside the grid. (The distance from (6,-5) to (6,2) is 7.)
+
+See what this produces:
+
+	int main()
+	{
+    	    clearGrid();
+    	    for (int r = 3; r <= 9; r += 2)
+	        plotHorizontalLine(r, 13, 17, '=');
+    	    for (int r = 11; r <= 17; r += 2)
+	        plotHorizontalLine(r, 1, NCOLS-1, '=');
+    	    for (int r = 3; r <= 9; r += 2)
+    	        for (int c = 1; c <= 11; c += 2)
+	            setChar(r, c, '*');
+    	    for (int r = 4; r <= 8; r += 2)
+    	        for (int c = 2; c <= 10; c += 2)
+	            setChar(r, c, '*');
+	    draw();
+	}
+Now try writing a function that plots a vertical line. The function prototype is
+
+	void plotVerticalLine(int r, int c, int distance, char ch);
+Akin to the way plotHorizontalLine works, this function draws a vertical line downward from (r,c).
+
+Now write a function that plots a rectangle.
+
+	void plotRectangle(int r, int c, int height, int width, char ch);
+This plots a rectangle whose upper left corner is (r,c), with the specified height and width. This function does not fill the interior of the rectangle; it leaves characters in the interior of the rectangle unchanged. Don't plot characters that fall outside the grid. If the height or width are not positive, this function returns without plotting anything. (Hint: This function is almost trivial if you have it call others you've already written.)
